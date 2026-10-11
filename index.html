@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Our Recipe Book</title>
+<meta name="description" content="High protein, high fibre, lower calorie recipes.">
+<meta name="theme-color" content="#EEF3F0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍝%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF3F0; --surface:#FFFFFF; --ink:#18261F; --muted:#5B6B62; --line:#D3DDD7;
+  --accent:#C8361F; --accent-ink:#FFFFFF; --green:#2F6B4F; --tint:#E3EDE7;
+  --head:'Bricolage Grotesque','Avenir Next','Helvetica Neue',Arial,sans-serif;
+  --body:'Figtree','Avenir Next','Helvetica Neue',Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A16; --surface:#1B2620; --ink:#E8F0EB; --muted:#9BAEA3; --line:#2C3A32;
+    --accent:#F0644B; --accent-ink:#1A0A06; --green:#7CC4A0; --tint:#22302A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A16; --surface:#1B2620; --ink:#E8F0EB; --muted:#9BAEA3; --line:#2C3A32;
+  --accent:#F0644B; --accent-ink:#1A0A06; --green:#7CC4A0; --tint:#22302A;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+main{max-width:640px;margin:0 auto;padding:20px 16px 56px}
+h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
+h1{font-size:2rem;font-weight:800;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:6px 0 20px}
+.search{display:block;width:100%;margin:0 0 14px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:400 1rem var(--body)}
+.search::placeholder{color:var(--muted)}
+.search:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin:0 0 14px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 .9rem var(--body);
+  padding:8px 14px;border-radius:999px;white-space:nowrap;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.group-title{font-size:1.05rem;color:var(--muted);font-weight:700;margin:22px 0 10px}
+.group-title small{font-weight:500;font-family:var(--body)}
+.tile{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);
+  border-left:6px solid var(--accent);border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer;color:inherit;font:inherit}
+.tile h3{font-size:1.2rem;font-weight:700;margin-bottom:4px}
+.tile p{margin:0 0 10px;color:var(--muted);font-size:.95rem}
+.tilestars{display:block;color:var(--accent);letter-spacing:2px;font-size:1rem;margin:-4px 0 10px}
+.macros{display:flex;gap:18px}
+.macros div{font-size:.8rem;color:var(--muted)}
+.macros b{display:block;font:700 1.15rem var(--head);color:var(--ink)}
+.empty{color:var(--muted);padding:24px 0}
+.back{background:none;border:0;color:var(--accent);font:600 1rem var(--body);padding:8px 0;margin-bottom:8px;cursor:pointer}
+.meta{color:var(--muted);margin:6px 0 10px}
+.ratebox{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin:0 0 14px}
+.ratebox .lbl{font-weight:600}
+.rating{display:flex;margin-left:-6px}
+.star{background:none;border:0;padding:0;width:42px;height:44px;font-size:1.9rem;line-height:1;color:var(--muted);cursor:pointer}
+.star.on{color:var(--accent)}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);background:var(--tint);border-radius:10px;padding:14px 8px;text-align:center;margin-bottom:22px}
+.strip b{display:block;font:800 1.6rem var(--head)}
+.strip span{font-size:.8rem;color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;margin:26px 0 10px}
+h2{font-size:1.3rem;font-weight:700}
+.servings{display:flex;align-items:center;gap:10px}
+.servings button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:1.2rem;cursor:pointer}
+.servings span{min-width:74px;text-align:center;font-weight:600}
+ul.ing{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+ul.ing li{border-bottom:1px solid var(--line)}
+ul.ing li:last-child{border-bottom:0}
+.irow{display:flex;align-items:stretch}
+.tick{display:flex;align-items:center;padding:0 12px 0 14px;cursor:pointer}
+.tick input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0;cursor:pointer}
+.itext{flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;
+  background:none;border:0;color:inherit;font:inherit;padding:13px 14px 13px 0;min-height:48px}
+button.itext{cursor:pointer}
+li.done .itext .txt{text-decoration:line-through;color:var(--muted)}
+.amt{font-weight:600}
+.swapmark{flex:none;color:var(--green);font-size:.8rem;font-weight:600;white-space:nowrap}
+.chev{display:inline-block;margin-left:3px;transition:transform .15s}
+[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.subs{background:var(--tint);padding:4px 16px 10px 48px;font-size:.95rem}
+.subs[hidden]{display:none}
+.subs p{margin:8px 0}
+.subs b{color:var(--green)}
+.subs .subhead{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin:10px 0 0}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:10px;margin-bottom:14px}
+ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
+  font:700 .9rem var(--head);display:grid;place-items:center;margin-top:1px}
+.swaps{background:var(--tint);border-radius:10px;padding:6px 16px}
+.swaps p{margin:10px 0}
+.swaps b{color:var(--green)}
+.hint{color:var(--muted);font-size:.85rem;margin:10px 0 0}
+.sliders{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:6px}
+.sliders label{display:flex;justify-content:space-between;font-weight:600;margin-bottom:6px}
+.sliders label span{color:var(--accent)}
+.sliders input[type=range]{width:100%;accent-color:var(--accent);margin:0 0 16px;height:28px}
+.sliders input[type=range]:last-child{margin-bottom:0}
+.sliders .ends{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin:-8px 0 16px}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+// ---- Recipes live here. To add one, copy an existing entry below and edit it. ----
+// Amounts are for r.serves servings. Items with u:"tin" always round up to whole tins.
+// s: substitutions for that ingredient, as [name, note] pairs (shown when the ingredient is tapped).
+var RECIPES = [
+  {
+    id:"sausage-kale-cannellini",
+    title:"Sausage, kale & cannellini pasta",
+    effort:"Easy", time:"30 min", mins:30, serves:4,
+    blurb:"Chicken sausage, white beans and wilted kale in a quick tomato sauce.",
+    protein:40, fibre:14, kcal:520,
+    ingredients:[
+      {a:320,u:"g",n:"wholewheat or chickpea pasta", s:[
+        ["Lentil or other pulse pasta","Same weight. More protein and fibre."],
+        ["Regular dried pasta","Same weight. Softer texture, less fibre."],
+        ["Brown rice pasta","Same weight. Gluten free."]
+      ]},
+      {a:8,u:"",n:"chicken sausages (about 60g each)", s:[
+        ["Turkey sausages","Same number. Slightly leaner."],
+        ["Pork sausages","Same number. Richer, but more calories."],
+        ["Plant-based sausages","Same number. Add a pinch of smoked paprika for depth."]
+      ]},
+      {a:2,u:"tin",size:"400g",n:"cannellini beans, drained", s:[
+        ["Butter beans or haricot beans","Same number of tins."],
+        ["Chickpeas","Same number of tins. Firmer bite."]
+      ]},
+      {a:200,u:"g",n:"kale, stalks removed, chopped", s:[
+        ["Spinach","Same weight. It wilts faster, so add it for the last 1-2 minutes."],
+        ["Cavolo nero or chard","Same weight. Cook for the same time as kale."]
+      ]},
+      {a:2,u:"",n:"courgettes, diced", s:[
+        ["Mushrooms","Similar amount. Fry until golden before adding the garlic."],
+        ["Peppers or aubergine","Similar amount. Aubergine needs a few extra minutes."]
+      ]},
+      {a:2,u:"tin",size:"400g",n:"chopped tomatoes", s:[
+        ["Passata","Same total weight. Gives a smoother sauce."],
+        ["Fresh tomatoes","Chop about 1kg and simmer for 10 extra minutes."]
+      ]},
+      {a:4,u:"",n:"garlic cloves, crushed", s:[
+        ["Jarred minced garlic","About ½ tsp per clove."],
+        ["Garlic granules","About ¼ tsp per clove."]
+      ]},
+      {a:2,u:"tsp",n:"olive oil", s:[
+        ["Rapeseed oil or oil spray","The sausages release fat, so you need very little."]
+      ]},
+      {a:40,u:"g",n:"parmesan, grated", s:[
+        ["Pecorino or Grana Padano","Same weight. Pecorino is saltier, so season less."],
+        ["Nutritional yeast","For dairy free. About 2 tbsp for the whole pan."]
+      ]},
+      {a:0,u:"",n:"chilli flakes, oregano, salt and pepper", s:[
+        ["Dried mixed Italian herbs","Instead of oregano."],
+        ["Cayenne or fresh chilli","A pinch of cayenne or a sliced fresh chilli instead of flakes."]
+      ]}
+    ],
+    steps:[
+      "Boil the pasta in a big pot of salted water per the packet. Save a mug of pasta water, then drain.",
+      "Squeeze the meat out of the sausage skins into a large, deep pan with the oil. Fry on medium-high for 6-8 minutes, breaking it up, until browned.",
+      "Add the courgettes and garlic and cook for 3-4 minutes.",
+      "Pour in the chopped tomatoes with the oregano and chilli. Simmer for 5 minutes.",
+      "Stir in the beans and kale and cook for 3-4 minutes until the kale wilts.",
+      "Toss in the pasta, loosening with a splash of pasta water. Season and top with parmesan."
+    ],
+    swaps:[
+      ["More protein","Stir in 200g cottage cheese at the end for creaminess, or use turkey sausages."],
+      ["More fibre","Use chickpea or lentil pasta, or add an extra tin of beans."],
+      ["Lower calories","Swap a third of the pasta for extra courgette."]
+    ],
+    leftovers:"Cool within 2 hours. Keeps in the fridge for up to 3 days, or freeze portions for up to 3 months. Reheat with a splash of water until piping hot."
+  },
+  {
+    id:"spicy-sausage-fusilli",
+    title:"Spicy sausage fusilli",
+    effort:"Easy", time:"30 min", mins:30, serves:6,
+    blurb:"Crisp fennel and chilli sausage meat tossed through fusilli pasta with white wine, lemon and parmesan.",
+    protein:28, fibre:3, kcal:660,
+    note:"From Jamie Oliver's Spicy sausage fusilli (serves 6). The page doesn't show nutrition numbers, so protein, fibre and calories are estimates worked out from the ingredients.",
+    ingredients:[
+      {a:2,u:"",n:"dried red chillies", s:[
+        ["Chilli flakes","About ½ tsp per chilli. Use less for a milder dish."],
+        ["Fresh red chilli","One sliced chilli per dried one. Fry it with the sausage meat."]
+      ]},
+      {a:2,u:"tsp",n:"fennel seeds (heaped)", s:[
+        ["Ground fennel","About 2 tsp for the whole pan."]
+      ]},
+      {a:0,u:"",n:"olive oil (a lug)", s:[
+        ["Rapeseed oil","Same amount."],
+        ["Oil spray","The sausages release plenty of fat, so very little oil is needed."]
+      ]},
+      {a:600,u:"g",n:"coarse Italian or Cumberland sausages, or higher-welfare pork mince", s:[
+        ["Chicken or turkey sausages","Same weight. Leaner, so fewer calories."],
+        ["Pork mince","Same weight. Season well, since mince has less built-in flavour."],
+        ["Plant-based sausages","Same weight. Cook until crisp, as in the method."]
+      ]},
+      {a:1,u:"tbsp",n:"dried oregano", s:[
+        ["Dried mixed Italian herbs","Same amount."],
+        ["Fresh oregano","About 3 tbsp chopped leaves, stirred in at the end."]
+      ]},
+      {a:250,u:"ml",n:"white wine", s:[
+        ["Chicken or vegetable stock","Same amount, with an extra squeeze of lemon. Alcohol free."],
+        ["Alcohol-free white wine","Same amount."]
+      ]},
+      {a:1,u:"",n:"lemon, zest and juice", s:[
+        ["Lime","Same number. Slightly sharper."],
+        ["Bottled lemon juice","About 3 tbsp. You'll lose the zest."]
+      ]},
+      {a:500,u:"g",n:"fusilli or penne", s:[
+        ["Wholewheat pasta","Same weight. More fibre."],
+        ["Chickpea or lentil pasta","Same weight. More protein and fibre."],
+        ["Brown rice pasta","Same weight. Gluten free."]
+      ]},
+      {a:20,u:"g",n:"parmesan, plus extra for serving", s:[
+        ["Pecorino or Grana Padano","Same weight. Pecorino is saltier, so season less."],
+        ["Nutritional yeast","For dairy free. About 2 tbsp for the whole pan."]
+      ]},
+      {a:15,u:"g",n:"fresh flat-leaf parsley (about ½ a bunch)", s:[
+        ["Fresh basil","Same weight."],
+        ["Fresh chives","Same weight. Milder, slightly oniony."]
+      ]}
+    ],
+    steps:[
+      "Crumble the chillies into a pestle and mortar and bash with the fennel seeds until coarsely crushed. Set aside.",
+      "Heat a lug of olive oil in a large, heavy-based frying pan over a high heat. Squeeze the meat out of the sausage skins into the pan (or add the mince) and break it up well with a wooden spoon. Fry for a few minutes until it starts to colour and some fat has rendered, then push it down once more so it looks like coarse mince.",
+      "Add the crushed fennel and chilli and cook on a medium heat for about 10 minutes, until the meat is crisp, golden brown and slightly caramelised.",
+      "Stir in the oregano, pour in the wine and let it reduce by half. Grate in the lemon zest, squeeze in the juice and turn the heat down low.",
+      "Meanwhile, cook the pasta in a large pan of salted boiling water to the packet instructions.",
+      "Drain the pasta while it still has a bit of bite, saving a mugful of the cooking water. Tip the pasta into the sausage pan and toss to coat, loosening with a splash of the water if needed.",
+      "Grate in the parmesan, then pick, roughly chop and add the parsley leaves. Taste, check the seasoning and serve straight away with a little extra parmesan."
+    ],
+    swaps:[
+      ["More protein","Use chickpea or lentil pasta, or stir in 1 × 400g tin of drained cannellini beans at the end."],
+      ["More fibre","Use wholewheat pasta and stir in 1 × 400g tin of drained cannellini or butter beans, plus a couple of handfuls of spinach, with the pasta."],
+      ["Lower calories","Use chicken or turkey sausages and cut the pasta to about 400g, filling the pan out with spinach or diced courgette."]
+    ],
+    leftovers:"Cool within 2 hours. Keeps in the fridge for up to 3 days, or freeze portions for up to 3 months. Reheat with a splash of water until piping hot."
+  },
+  {
+    id:"pork-sesame-udon-noodles",
+    title:"15-minute pork & sesame udon noodles",
+    effort:"Easy", time:"15 min", mins:15, serves:2,
+    blurb:"Chewy udon stir-fried with pork mince, ginger, garlic, sesame and Asian greens.",
+    protein:45, fibre:3, kcal:750,
+    note:"From Marion's Kitchen (serves 2). Pre-cooked udon is sold vacuum-packed in the Asian aisle or fridge section of major supermarkets, or at an Asian grocer, and frozen udon works too. The page doesn't show nutrition numbers, so protein, fibre and calories are rough estimates.",
+    ingredients:[
+      {a:400,u:"g",n:"pre-cooked udon noodles (about 200g per pack)"},
+      {a:2,u:"tsp",n:"sesame oil"},
+      {a:2,u:"tbsp",n:"vegetable oil"},
+      {a:3,u:"",n:"garlic cloves, roughly chopped"},
+      {a:4,u:"",n:"cm piece of ginger, peeled and cut into fine strips"},
+      {a:4,u:"",n:"spring onions, white and green parts sliced and kept separate"},
+      {a:1,u:"tbsp",n:"sesame seeds, plus extra to serve"},
+      {a:400,u:"g",n:"pork mince"},
+      {a:1,u:"cup",n:"sliced Asian green vegetables, such as bok choy or pak choy", s:[
+        ["Choy sum, gai lan or broccolini","Same amount. Use whichever is in season."],
+        ["Snow peas or shredded cabbage","Same amount. Add with the greens."]
+      ]},
+      {a:0.25,u:"cup",n:"soy sauce"},
+      {a:1,u:"tsp",n:"chilli powder", s:[
+        ["Chilli flakes","About 1 tsp, or to taste."]
+      ]}
+    ],
+    steps:[
+      "Bring a pot of water to the boil. Add the noodles, leave for a few seconds, then gently shake them apart with tongs. Drain, tip into a bowl and toss with the sesame oil.",
+      "Heat the vegetable oil in a wok or frying pan over a high heat. Stir-fry the garlic, ginger and white part of the spring onions for 10 seconds, then add the sesame seeds and stir-fry for another 30 seconds.",
+      "Push the mixture to the sides, add the pork to the middle and spread it out. Cook for about a minute, then break it up with a spatula and stir-fry until almost cooked.",
+      "Add the Asian greens and stir-fry for 30 seconds.",
+      "Add the noodles, soy sauce and chilli powder. Stir-fry until everything is combined and the sauce thickens slightly.",
+      "Serve topped with the green part of the spring onions and extra sesame seeds."
+    ],
+    swaps:[
+      ["More fibre","Double the Asian greens, or add a handful of snow peas."],
+      ["Lower calories","Use 300g of pork mince and more greens."]
+    ],
+    leftovers:"Cool within 2 hours. Keeps in the fridge for up to 2 days. Reheat with a splash of water until piping hot."
+  }
+];
+var EFFORTS = [["Easy","20-30 min"],["Medium","45-60 min"],["Hard","90+ min"]];
+var TIMES = [30,45,60,90,120,Infinity];
+var TIME_LABELS = ["Up to 30 min","Up to 45 min","Up to 1 hr","Up to 1.5 hr","Up to 2 hr","Any (2 hr+)"];
+var RATING_CHIPS = [[0,"Any rating"],[3,"3+ stars"],[4,"4+ stars"],[5,"5 stars"]];
+var KCAL_MIN = 300, KCAL_MAX = 700;
+var timeIdx = 5, kcalMax = KCAL_MAX, openId = null, servings = {}, query = "", minRating = 0, subOpen = {};
+
+function load(k, d){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
+function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+// ---- Ratings: saved in this browser (localStorage) ----
+var ratings = load("ratings", {});
+function rating(id){ return Number(ratings[id]) || 0; }
+function stars(n){ return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n); }
+function starsHTML(id){
+  var cur = rating(id), h = "";
+  for (var n = 1; n <= 5; n++){
+    h += '<button class="star'+(n <= cur ? ' on' : '')+'" data-star="'+n+'" aria-label="'+n+' star'+(n > 1 ? 's' : '')+'" aria-pressed="'+(n === cur)+'">'+(n <= cur ? '★' : '☆')+'</button>';
+  }
+  return h;
+}
+
+function fmt(n){
+  if (n >= 10) { var big = Math.round(n*10)/10; return String(big % 1 === 0 ? big : big.toFixed(1)); }
+  var whole = Math.floor(n + 1e-9), frac = n - whole;
+  var F = [[0,""],[.25,"¼"],[.333,"⅓"],[.5,"½"],[.667,"⅔"],[.75,"¾"],[1,""]];
+  for (var k = 0; k < F.length; k++){
+    if (Math.abs(frac - F[k][0]) < .04){
+      if (F[k][0] === 1) whole += 1;
+      return (whole ? String(whole) : "") + F[k][1] || "0";
+    }
+  }
+  var r = Math.round(n*10)/10;
+  return String(r % 1 === 0 ? r : r.toFixed(1));
+}
+function amountText(i, f){
+  if (!i.a) return "";
+  if (i.u === "tin"){
+    var n = Math.max(1, Math.ceil(i.a * f - 1e-9));
+    return n + " × " + (i.size ? esc(i.size) + " " : "") + "tin" + (n > 1 ? "s" : "");
+  }
+  return fmt(i.a * f) + (i.u ? (["g","kg","ml","l"].indexOf(i.u) > -1 ? esc(i.u) : " " + esc(i.u)) : "");
+}
+function tileHTML(r){
+  var rt = rating(r.id);
+  return '<button class="tile" data-open="'+esc(r.id)+'"><h3>'+esc(r.title)+'</h3><p>'+esc(r.blurb)+'</p>'+
+    (rt ? '<span class="tilestars" aria-label="Rated '+rt+' out of 5">'+stars(rt)+'</span>' : '')+
+    '<div class="macros"><div><b>'+r.protein+'g</b>protein</div><div><b>'+r.fibre+'g</b>fibre</div><div><b>'+r.kcal+'</b>kcal</div></div></button>';
+}
+function timeText(){ return TIME_LABELS[timeIdx]; }
+function kcalText(){ return kcalMax >= KCAL_MAX ? "Any" : "Up to " + kcalMax + " kcal"; }
+// Every typed word must appear in the title, blurb or ingredients ("pasta" widens, "sausage pasta" narrows).
+function matches(r){
+  var words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length) return true;
+  var hay = (r.title+" "+r.blurb+" "+r.ingredients.map(function(i){ return i.n; }).join(" ")).toLowerCase();
+  return words.every(function(w){
+    return hay.indexOf(w) > -1 || (w.length > 3 && w.slice(-1) === "s" && hay.indexOf(w.slice(0,-1)) > -1);
+  });
+}
+function resultsHTML(){
+  var h = "", shown = 0, limit = TIMES[timeIdx];
+  EFFORTS.forEach(function(e){
+    var rs = RECIPES.filter(function(r){
+      return r.effort === e[0] && r.mins <= limit && (kcalMax >= KCAL_MAX || r.kcal <= kcalMax) &&
+        (!minRating || rating(r.id) >= minRating) && matches(r);
+    }).sort(function(a,b){ return rating(b.id) - rating(a.id); });
+    if (!rs.length) return;
+    shown += rs.length;
+    h += '<h2 class="group-title">'+e[0]+' <small>('+e[1]+')</small></h2>' + rs.map(tileHTML).join("");
+  });
+  if (!shown) h = '<p class="empty">No recipes match. Try different keywords, or loosen the rating, time or calorie filters.</p>';
+  return h;
+}
+function listView(){
+  var h = '<h1>Our recipe book</h1>' +
+    '<p class="sub">High protein, high fibre, lower calorie.</p>';
+  h += '<input type="search" id="q" class="search" placeholder="Search recipes, e.g. sausage pasta" aria-label="Search recipes" autocomplete="off" value="'+esc(query)+'">';
+  h += '<div class="filters" role="group" aria-label="Minimum rating">' + RATING_CHIPS.map(function(c){
+    return '<button class="chip" data-minr="'+c[0]+'" aria-pressed="'+(c[0] === minRating)+'">'+c[1]+'</button>';
+  }).join("") + '</div>';
+  h += '<div class="sliders">' +
+    '<label for="time">Time <span id="timeVal">'+timeText()+'</span></label>' +
+    '<input type="range" id="time" min="0" max="5" step="1" value="'+timeIdx+'">' +
+    '<div class="ends"><span>30 min</span><span>2 hr+</span></div>' +
+    '<label for="kcal">Calories per serving <span id="kcalVal">'+kcalText()+'</span></label>' +
+    '<input type="range" id="kcal" min="'+KCAL_MIN+'" max="'+KCAL_MAX+'" step="10" value="'+kcalMax+'">' +
+    '<div class="ends"><span>'+KCAL_MIN+'</span><span>Any</span></div></div>';
+  h += '<div id="results">' + resultsHTML() + '</div>';
+  return h;
+}
+function ingredientHTML(r, i, idx, f, checks){
+  var amt = amountText(i, f);
+  var txt = '<span class="txt">' + (amt ? '<span class="amt">'+amt+'</span> ' : '') + esc(i.n) + '</span>';
+  var tick = '<label class="tick"><input type="checkbox" data-i="'+idx+'" aria-label="Tick off '+esc(i.n)+'"'+(checks[idx] ? ' checked' : '')+'></label>';
+  var h = '<li'+(checks[idx] ? ' class="done"' : '')+'><div class="irow">' + tick;
+  if (i.s && i.s.length){
+    var open = !!subOpen[r.id + ":" + idx];
+    h += '<button class="itext" data-sub="'+idx+'" aria-expanded="'+open+'" aria-controls="sub-'+idx+'">' + txt +
+      '<span class="swapmark">swaps<span class="chev" aria-hidden="true">▾</span></span></button></div>' +
+      '<div class="subs" id="sub-'+idx+'"'+(open ? '' : ' hidden')+'><p class="subhead">Swap options</p>' +
+      i.s.map(function(s){ return '<p><b>'+esc(s[0])+':</b> '+esc(s[1])+'</p>'; }).join("") + '</div></li>';
+  } else {
+    h += '<div class="itext">' + txt + '</div></div></li>';
+  }
+  return h;
+}
+function recipeView(r){
+  var s = servings[r.id] || r.serves, f = s / r.serves;
+  var checks = load("ticked:" + r.id, {});
+  var h = '<button class="back" data-back="1">‹ All recipes</button><h1>'+esc(r.title)+'</h1>';
+  h += '<p class="meta">'+esc(r.effort)+', '+esc(r.time)+'</p>';
+  h += '<div class="ratebox"><span class="lbl">Your rating</span><div class="rating" id="stars" role="group" aria-label="Your rating">'+starsHTML(r.id)+'</div></div>';
+  h += '<div class="strip"><div><b>'+r.protein+'g</b><span>protein</span></div><div><b>'+r.fibre+'g</b><span>fibre</span></div><div><b>'+r.kcal+'</b><span>kcal per serving</span></div></div>';
+  if (r.note) h += '<p class="hint" style="margin:-8px 0 0">' + esc(r.note) + '</p>';
+  h += '<div class="row"><h2>Ingredients</h2><div class="servings"><button data-s="-1" aria-label="Fewer servings">−</button><span>'+s+' serving'+(s > 1 ? 's' : '')+'</span><button data-s="1" aria-label="More servings">+</button></div></div>';
+  h += '<ul class="ing">' + r.ingredients.map(function(i,idx){ return ingredientHTML(r, i, idx, f, checks); }).join("") + '</ul>';
+  h += '<p class="hint">Tick the box as you shop or cook. Tap an ingredient marked "swaps" for substitutions. Tins are always rounded up to whole tins.</p>';
+  h += '<div class="row"><h2>Method</h2></div><ol class="steps">' + r.steps.map(function(t){ return '<li><div>'+esc(t)+'</div></li>'; }).join("") + '</ol>';
+  if (r.swaps && r.swaps.length){
+    h += '<div class="row"><h2>Swaps</h2></div><div class="swaps">' + r.swaps.map(function(w){ return '<p><b>'+esc(w[0])+':</b> '+esc(w[1])+'</p>'; }).join("") + '</div>';
+  }
+  if (r.leftovers){
+    h += '<div class="row"><h2>Leftovers</h2></div><div class="swaps"><p>'+esc(r.leftovers)+'</p></div>';
+  }
+  return h;
+}
+function render(){
+  var app = document.getElementById("app");
+  var r = RECIPES.filter(function(x){ return x.id === openId; })[0];
+  app.innerHTML = r ? recipeView(r) : listView();
+  window.scrollTo(0,0);
+}
+document.addEventListener("click", function(e){
+  var t = e.target.closest("[data-open],[data-back],[data-s],[data-star],[data-minr],[data-sub]");
+  if (!t) return;
+  var d = t.dataset;
+  if (d.open) { location.hash = d.open; }
+  else if (d.back) { location.hash = ""; }
+  else if (d.s !== undefined) {
+    var r = RECIPES.filter(function(x){ return x.id === openId; })[0];
+    var s = (servings[r.id] || r.serves) + Number(d.s);
+    servings[r.id] = Math.max(1, Math.min(Math.max(12, r.serves * 2), s));
+    var y = window.scrollY; render(); window.scrollTo(0,y);
+  }
+  else if (d.star !== undefined) {
+    var n = Number(d.star);
+    ratings[openId] = rating(openId) === n ? 0 : n;
+    save("ratings", ratings);
+    document.getElementById("stars").innerHTML = starsHTML(openId);
+  }
+  else if (d.minr !== undefined) {
+    minRating = Number(d.minr);
+    document.querySelectorAll("[data-minr]").forEach(function(c){
+      c.setAttribute("aria-pressed", String(Number(c.dataset.minr) === minRating));
+    });
+    document.getElementById("results").innerHTML = resultsHTML();
+  }
+  else if (d.sub !== undefined) {
+    var panel = document.getElementById("sub-" + d.sub);
+    var willOpen = panel.hidden;
+    panel.hidden = !willOpen;
+    t.setAttribute("aria-expanded", String(willOpen));
+    subOpen[openId + ":" + d.sub] = willOpen;
+  }
+});
+document.addEventListener("change", function(e){
+  if (e.target.dataset && e.target.dataset.i !== undefined){
+    var k = "ticked:" + openId, c = load(k, {});
+    c[e.target.dataset.i] = e.target.checked; save(k, c);
+    var li = e.target.closest("li");
+    if (li) li.classList.toggle("done", e.target.checked);
+  }
+});
+document.addEventListener("input", function(e){
+  if (e.target.id === "time") timeIdx = Number(e.target.value);
+  else if (e.target.id === "kcal") kcalMax = Number(e.target.value);
+  else if (e.target.id === "q") query = e.target.value;
+  else return;
+  document.getElementById("timeVal").textContent = timeText();
+  document.getElementById("kcalVal").textContent = kcalText();
+  document.getElementById("results").innerHTML = resultsHTML();
+});
+
+// Each recipe has its own address (#recipe-id), so the phone's back button and shared links work.
+function route(){
+  var id = decodeURIComponent(location.hash.slice(1));
+  openId = RECIPES.some(function(x){ return x.id === id; }) ? id : null;
+  render();
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
